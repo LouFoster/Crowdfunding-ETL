@@ -1,11 +1,11 @@
-﻿-- Exported from QuickDBD: https://www.quickdatabasediagrams.com/
+-- Exported from QuickDBD: https://www.quickdatabasediagrams.com/
+-- Link to schema: https://app.quickdatabasediagrams.com/#/d/dlKkBe
 -- NOTE! If you have used non-SQL datatypes in your design, you will have to change these here.
 
-
-CREATE TABLE "Campaign" (
+CREATE TABLE "campaign" (
     "cf_id" int   NOT NULL,
     "contact_id" int   NOT NULL,
-    "company_name" varchar(10)   NOT NULL,
+    "company_name" varchar(100)   NOT NULL,
     "description" text   NOT NULL,
     "goal" numeric(10,2)   NOT NULL,
     "pledged" numeric(10,2)   NOT NULL,
@@ -13,41 +13,64 @@ CREATE TABLE "Campaign" (
     "backers_count" int   NOT NULL,
     "country" varchar(10)   NOT NULL,
     "currency" varchar(10)   NOT NULL,
-    "launched_date" date   NOT NULL,
+    "launch_date" date   NOT NULL,
     "end_date" date   NOT NULL,
     "category_id" varchar(10)   NOT NULL,
     "subcategory_id" varchar(10)   NOT NULL,
-    CONSTRAINT "pk_Campaign" PRIMARY KEY (
+    CONSTRAINT "pk_campaign" PRIMARY KEY (
         "cf_id"
      )
 );
 
-CREATE TABLE "Contacts" (
+CREATE TABLE "category" (
+    "category_id" varchar(10)   NOT NULL,
+    "category_name" varchar(50)   NOT NULL,
+    CONSTRAINT "pk_category" PRIMARY KEY (
+        "category_id"
+     )
+);
+
+CREATE TABLE "subcategory" (
+    "subcategory_id" varchar(10)   NOT NULL,
+    "subcategory_name" varchar(50)   NOT NULL,
+    CONSTRAINT "pk_subcategory" PRIMARY KEY (
+        "subcategory_id"
+     )
+);
+
+CREATE TABLE "contacts" (
     "contact_id" int   NOT NULL,
     "first_name" varchar(50)   NOT NULL,
     "last_name" varchar(50)   NOT NULL,
     "email" varchar(100)   NOT NULL,
-    CONSTRAINT "pk_Contacts" PRIMARY KEY (
+    CONSTRAINT "pk_contacts" PRIMARY KEY (
         "contact_id"
      )
 );
 
-CREATE TABLE "Subcategory" (
-    "subcategory_id" varchar(10)   NOT NULL,
-    "subcategory" varchar(50)   NOT NULL
+CREATE TABLE "backers" (
+    "backer_id" varchar(10)   NOT NULL,
+    "cf_id" int   NOT NULL,
+    "first_name" varchar(50)   NOT NULL,
+    "last_name" varchar(50)   NOT NULL,
+    "email" varchar(100)   NOT NULL,
+    CONSTRAINT "pk_backers" PRIMARY KEY (
+        "backer_id"
+     )
 );
 
-CREATE TABLE "Category" (
-    "category_id" varchar(10)   NOT NULL,
-    "category" varchar(50)   NOT NULL
-);
+ 
+ALTER TABLE "campaign" ADD CONSTRAINT "fk_campaign_contact_id" FOREIGN KEY("contact_id")
+REFERENCES "contacts" ("contact_id");
 
-ALTER TABLE "Campaign" ADD CONSTRAINT "fk_Campaign_contact_id" FOREIGN KEY("contact_id")
-REFERENCES "Contacts" ("contact_id");
+ALTER TABLE "campaign" ADD CONSTRAINT "fk_campaign_category_id" FOREIGN KEY("category_id")
+REFERENCES "category" ("category_id");
 
-ALTER TABLE "Campaign" ADD CONSTRAINT "fk_Campaign_category_id" FOREIGN KEY("category_id")
-REFERENCES "Category" ("category_id");
+ALTER TABLE "campaign" ADD CONSTRAINT "fk_campaign_subcategory_id" FOREIGN KEY("subcategory_id")
+REFERENCES "subcategory" ("subcategory_id");
 
-ALTER TABLE "Campaign" ADD CONSTRAINT "fk_Campaign_subcategory_id" FOREIGN KEY("subcategory_id")
-REFERENCES "Subcategory" ("subcategory_id");
+ALTER TABLE "backers" ADD CONSTRAINT "fk_backers_cf_id" FOREIGN KEY("cf_id")
+REFERENCES "campaign" ("cf_id");
+
+SELECT * from backers;
 
